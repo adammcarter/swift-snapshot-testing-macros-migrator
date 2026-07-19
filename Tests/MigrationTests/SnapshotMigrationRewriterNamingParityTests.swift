@@ -129,7 +129,17 @@ struct RewriterNamingParityTests {
 
       #expect(artifact.repoRelativePath == expectedRelativePath)
 
-      let checkedInArtifactPath = Self.repositoryRootPath + "/" + expectedRelativePath
+      /*
+       The artifact is resolved against this repository's vendored copy rather than the library's
+       working tree: the assertion is that the computed name matches the artifact the legacy
+       runtime actually produced, and that holds wherever the file is stored.
+       */
+      let checkedInArtifactPath = Self.fixtureArtifactsRoot
+        + "/"
+        + expectedRelativePath.replacingOccurrences(
+          of: "Tests/SnapshotsIntegrationTests/SnapshotTest/__Snapshots__/LegacySnapshotTestMigration/",
+          with: ""
+        )
       #expect(
         FileManager.default.fileExists(atPath: checkedInArtifactPath),
         "Expected the computed path to point at the checked-in legacy artifact: \(checkedInArtifactPath)"
@@ -251,8 +261,24 @@ struct RewriterNamingParityTests {
       .path
   }
 
+  /*
+   A copy of the library's checked-in legacy suite, carried here as test data rather than read
+   out of the library's working tree: this repository must be able to run its own tests without
+   the library checked out beside it. It has a `.fixture` extension so the test target does not
+   try to compile a file full of deprecated macros.
+   */
+  private static var fixtureArtifactsRoot: String {
+    URL(fileURLWithPath: #filePath)
+      .deletingLastPathComponent()
+      .appendingPathComponent("Fixtures/__Snapshots__LegacySnapshotTestMigration")
+      .path
+  }
+
   private static var legacyFixturePath: String {
-    repositoryRootPath + "/Tests/SnapshotsIntegrationTests/SnapshotTest/LegacySnapshotTestMigration.swift"
+    URL(fileURLWithPath: #filePath)
+      .deletingLastPathComponent()
+      .appendingPathComponent("Fixtures/LegacySnapshotTestMigration.swift.fixture")
+      .path
   }
 }
 #endif

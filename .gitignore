@@ -1,0 +1,16 @@
+.DS_Store
+/.build
+/Packages
+/.worktrees/
+xcuserdata/
+Derived/
+
+DerivedData/
+.swiftpm/configuration/registries.json
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+.netrc
+.vscode/
+/docs/superpowers/
+swift-snapshot-testing-macros.xcodeproj/project.pbxproj
+swift-snapshot-testing-macros.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+/Tests/SnapshotsPlayground/__Snapshots__/
