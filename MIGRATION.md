@@ -176,7 +176,7 @@ Three v3 changes each alter macOS output on their own. Any one of them is enough
 | Change | Effect on a 2.x reference | Why |
 | --- | --- | --- |
 | Colour space is tagged sRGB | **Every pixel differs**, including flat background | 2.x produced Generic RGB, which is device-dependent. sRGB is deterministic, so the same view records identically on any machine. |
-| Unspecified scale is a fixed 2x | Dimensions match a 2.x reference recorded on a Retina Mac; a non-Retina one halves | 2.x followed the recording machine's screen, so references were never reproducible across machines or on CI. See [Documentation/Usage.md](Documentation/Usage.md). |
+| Unspecified scale is a fixed 2x | Dimensions match a 2.x reference recorded on a Retina Mac; a non-Retina one halves | 2.x followed the recording machine's screen, so references were never reproducible across machines or on CI. See [the library's Usage guide](https://github.com/adammcarter/swift-snapshot-testing-macros/blob/main/Documentation/Usage.md), where the rendering behaviour itself lives. |
 | Theme traits are applied per theme | Light references change; dark ones do not | 2.x recorded byte-identical files for `.light` and `.dark` — the theme was never applied, so every "light" reference was a duplicate of its dark twin and proved nothing. |
 
 The colour-space change alone re-records everything, so there is no combination of renaming or configuration that preserves a 2.x macOS baseline. What the migration *does* preserve is the ability to **review** the change: references keep resolving (see naming parity below), so the first run reports real, inspectable mismatches instead of silently recording new artifacts over a baseline that no longer resolves.
