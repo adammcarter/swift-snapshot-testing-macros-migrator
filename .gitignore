@@ -14,3 +14,7 @@ DerivedData/
 swift-snapshot-testing-macros.xcodeproj/project.pbxproj
 swift-snapshot-testing-macros.xcodeproj/project.xcworkspace/contents.xcworkspacedata
 /Tests/SnapshotsPlayground/__Snapshots__/
+
+# Agent working artifacts: audits and plans are session records, not published
+# documentation.
+docs/
