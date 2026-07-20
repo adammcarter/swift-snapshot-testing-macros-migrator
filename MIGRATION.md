@@ -194,7 +194,7 @@ iOS suites are unaffected by the scale and colour-space items: they inherit a re
 
 Legacy parameterised artifacts live at `__Snapshots__/<TestFile>/<case>/<display>_<size>_<theme>.<n>.<ext>`. v3 moved them to `__Snapshots__/<TestFile>/<display>/<case>_<display>_<size>_<theme>.<n>.<ext>` — the case name moved out of the folder and into the file-name prefix, and the folder became the test's display name.
 
-Migrated tests do **not** resolve 2.x references until those files are renamed into the v3 layout, and a missing reference records rather than fails — so an unrenamed baseline produces a green run that compares nothing.
+Migrated tests do **not** resolve 2.x references until those files are renamed into the v3 layout. A missing reference is recorded *and* reported: the run fails with `No reference was found on disk. Automatically recorded snapshot`, asking you to re-run. Re-running then passes — against the artifacts the failed run just wrote. An unrenamed baseline therefore does not go green immediately; it goes green on the second attempt, comparing nothing, which is the easier trap to fall into.
 
 `Tools/migrate-snapshot-tests --apply` renames them for you, in the same run that rewrites the sources, so the two never go out of step. It applies both changes: the case/display swap above, and the explicit-size token (`fixed-size` becomes `fixed-<width>x<height>`, read from the suite declaration it just migrated). A dry run reports the renames without performing them.
 

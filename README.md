@@ -17,10 +17,11 @@ Tools/migrate-snapshot-tests --project-root /path/to/your-repo --apply --json-re
 Dry-run is the default. `--apply` writes the migrated files.
 
 **It migrates sources *and* references in the same run.** Rewriting the code without moving the
-checked-in reference images leaves every assertion unable to resolve its artifact — and because a
-missing reference records rather than fails, the suite then reports green while comparing against
-files it wrote moments earlier. Renaming them together turns that silent re-record into a
-reviewable diff.
+checked-in reference images leaves every assertion unable to resolve its artifact. The first run
+then fails, reporting `No reference was found on disk. Automatically recorded snapshot` and asking
+you to re-run — and the re-run passes, because it now compares against the files that failed run
+wrote. The green is one re-run away, not immediate, which is precisely what makes it easy to walk
+into. Renaming references alongside the source turns that into a reviewable diff instead.
 
 See [MIGRATION.md](MIGRATION.md) for the full mapping, the rollout sequence, and what changes
 about your reference images on macOS.
