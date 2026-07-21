@@ -50,6 +50,36 @@ struct SnapshotMigrationRewriterCoreTests {
     #expect(result.changed)
   }
 
+  /// Parity by delegation: `.tags` and `.timeLimit` are native Swift Testing traits that the
+  /// library never reimplemented — under the legacy macro they rode on `@SnapshotSuite` only to
+  /// be forwarded to the generated suite, and under the native API they belong on `@Suite`
+  /// directly. The migrator carries every legacy argument onto the surviving `@Suite` verbatim,
+  /// so these must survive the rewrite unchanged; dropping them would silently lose behaviour the
+  /// adopter declared. This pins that guarantee for the specific traits that have no
+  /// library-side test of their own.
+  @Test
+  func foldsNativeSwiftTestingTraitsVerbatimAlongsideSnapshotTraits() throws {
+    let input = """
+    @Suite
+    @SnapshotSuite(.tags(.critical), .timeLimit(.minutes(1)), .theme(.light))
+    struct ProfileCardSnapshots {
+      @SnapshotTest("Default")
+      func profileCard() -> some View {
+        ProfileCard()
+      }
+    }
+    """
+
+    let result = try SnapshotMigrationRewriter().rewrite(source: input)
+
+    // Every trait survives, none dropped, all on the surviving @Suite.
+    #expect(result.output.contains(".tags(.critical)"))
+    #expect(result.output.contains(".timeLimit(.minutes(1))"))
+    #expect(result.output.contains(".theme(.light)"))
+    #expect(result.output.contains("@Suite(.tags(.critical), .timeLimit(.minutes(1)), .theme(.light))"))
+    #expect(result.changed)
+  }
+
   @Test
   func addsMainActorToSwiftUISuiteAndTopLevelSnapshotTests() throws {
     let input = """
